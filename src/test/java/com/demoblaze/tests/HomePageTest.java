@@ -1,43 +1,46 @@
 package com.demoblaze.tests;
 
-import com.demoblaze.pages.HomePage;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
 import static org.testng.Assert.assertTrue;
 
-public class HomePageTest {
-    private WebDriver driver;
-    private HomePage homePage;
-
-    @BeforeMethod
-    public void setUp() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        homePage = new HomePage(driver);
-        homePage.navigateTo("https://www.demoblaze.com/");
-    }
+public class HomePageTest extends BaseTest {
 
     @Test
     public void testHomePageElements() {
+        // Verify multiple homepage elements
         assertTrue(homePage.isLoginLinkDisplayed(), "Login link should be displayed");
+        assertTrue(homePage.isSignUpLinkDisplayed(), "Sign up link should be displayed");
+        assertTrue(homePage.isCartLinkDisplayed(), "Cart link should be displayed");
+        assertTrue(homePage.isContactLinkDisplayed(), "Contact link should be displayed");
     }
 
     @Test
     public void testNavigationToLogin() {
+        // Click login link and verify modal appears
         homePage.clickLoginLink();
-        // Add assertions for login modal
+        
+        // Add proper assertions for login modal
+        waitHelper.waitForElementVisible(loginPage.getLoginButton());
+        assertTrue(loginPage.isLoginModalDisplayed(), "Login modal should be displayed");
+        
+        // Verify login form elements
+        assertTrue(loginPage.isUsernameFieldDisplayed(), "Username field should be displayed");
+        assertTrue(loginPage.isPasswordFieldDisplayed(), "Password field should be displayed");
+        assertTrue(loginPage.isLoginButtonDisplayed(), "Login button should be displayed");
     }
 
-    @AfterMethod
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
+    @Test
+    public void testNavigationBetweenPages() {
+        // Test navigation to contact page
+        homePage.clickContactLink();
+        assertTrue(contactPage.isContactModalDisplayed(), "Contact modal should be displayed");
+        
+        // Navigate to cart page
+        homePage.clickCartLink();
+        assertTrue(driver.getCurrentUrl().contains("cart"), "URL should contain 'cart'");
+        
+        // Navigate back to home
+        homePage.clickHomeLink();
+        assertTrue(productPage.isProductListDisplayed(), "Product list should be displayed on home page");
     }
-} 
+}

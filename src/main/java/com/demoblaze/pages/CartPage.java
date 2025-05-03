@@ -50,7 +50,7 @@ public class CartPage extends BasePage {
 
     public int getCartItemCount() {
         try {
-            wait.until(ExpectedConditions.visibilityOfAllElements(cartItems));
+            waitHelper.waitForAllElementsVisible(cartItems);
             return cartItems.size();
         } catch (Exception e) {
             return 0;
@@ -58,45 +58,39 @@ public class CartPage extends BasePage {
     }
 
     public void clickPlaceOrder() {
-        wait.until(ExpectedConditions.elementToBeClickable(placeOrderButton)).click();
+        waitHelper.waitForElementToBeClickable(placeOrderButton).click();
     }
 
     public void fillPurchaseForm(String name, String country, String city, String card, String month, String year) {
-        wait.until(ExpectedConditions.visibilityOf(nameField)).sendKeys(name);
-        wait.until(ExpectedConditions.visibilityOf(countryField)).sendKeys(country);
-        wait.until(ExpectedConditions.visibilityOf(cityField)).sendKeys(city);
-        wait.until(ExpectedConditions.visibilityOf(cardField)).sendKeys(card);
-        wait.until(ExpectedConditions.visibilityOf(monthField)).sendKeys(month);
-        wait.until(ExpectedConditions.visibilityOf(yearField)).sendKeys(year);
+        waitHelper.waitForElementVisible(nameField).sendKeys(name);
+        waitHelper.waitForElementVisible(countryField).sendKeys(country);
+        waitHelper.waitForElementVisible(cityField).sendKeys(city);
+        waitHelper.waitForElementVisible(cardField).sendKeys(card);
+        waitHelper.waitForElementVisible(monthField).sendKeys(month);
+        waitHelper.waitForElementVisible(yearField).sendKeys(year);
     }
 
     public void clickPurchase() {
         try {
             System.out.println("Clicking purchase button...");
-            Thread.sleep(2000); // Wait for modal to be ready
             
             // Wait for the purchase button to be present and visible
             By purchaseButtonLocator = By.xpath("//button[contains(text(), 'Purchase')]");
-            WebElement purchaseBtn = wait.until(ExpectedConditions.presenceOfElementLocated(purchaseButtonLocator));
-            wait.until(ExpectedConditions.elementToBeClickable(purchaseBtn));
+            WebElement purchaseBtn = waitHelper.waitForElementVisible(purchaseButtonLocator);
+            waitHelper.waitForElementToBeClickable(purchaseBtn);
             
             // Scroll the button into view
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", purchaseBtn);
-            Thread.sleep(1000); // Wait for scroll
+            
+            // Wait for scrolling to complete (replacing Thread.sleep)
+            waitHelper.waitWithTimeout(ExpectedConditions.elementToBeClickable(purchaseBtn), 3);
             
             // Click using JavaScript
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", purchaseBtn);
             System.out.println("Purchase button clicked successfully");
             
-            // Wait for any alert that might appear
-            try {
-                Thread.sleep(2000);
-                Alert alert = driver.switchTo().alert();
-                System.out.println("Alert found: " + alert.getText());
-                alert.accept();
-            } catch (Exception e) {
-                System.out.println("No alert found after purchase click");
-            }
+            // Check for any alert that might appear
+            alertHelper.acceptAlertIfPresent();
         } catch (Exception e) {
             System.out.println("Error clicking purchase button: " + e.getMessage());
             e.printStackTrace();
@@ -111,15 +105,13 @@ public class CartPage extends BasePage {
             String currentUrl = driver.getCurrentUrl();
             System.out.println("Current URL: " + currentUrl);
             
-            // Wait for the confirmation dialog with a longer timeout
-            WebDriverWait extendedWait = new WebDriverWait(driver, Duration.ofSeconds(20));
-            
             // Try different selectors for the confirmation message
             try {
-                // Wait for the success message
+                // Wait for the success message with extended timeout
                 By successMessageLocator = By.xpath("//h2[contains(text(), 'Thank you')]");
-                WebElement confirmationElement = extendedWait.until(
-                    ExpectedConditions.visibilityOfElementLocated(successMessageLocator)
+                WebElement confirmationElement = waitHelper.waitWithTimeout(
+                    ExpectedConditions.visibilityOfElementLocated(successMessageLocator), 
+                    20
                 );
                 String confirmationText = confirmationElement.getText();
                 System.out.println("Order confirmation text: " + confirmationText);
@@ -139,4 +131,4 @@ public class CartPage extends BasePage {
     public boolean isCartEmpty() {
         return getCartItemCount() == 0;
     }
-} 
+}

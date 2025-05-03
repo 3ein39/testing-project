@@ -1,42 +1,14 @@
 package com.demoblaze.tests;
 
-import com.demoblaze.pages.*;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Test;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.NoAlertPresentException;
-
+import org.testng.annotations.DataProvider;
+import org.testng.Reporter;
 import static org.testng.Assert.*;
+
 import java.util.List;
 
-public class DemoBlazeTest {
-    private WebDriver driver;
-    private HomePage homePage;
-    private LoginPage loginPage;
-    private ProductPage productPage;
-    private CartPage cartPage;
-    private CategoryPage categoryPage;
-    private SignUpPage signUpPage;
-    private ContactPage contactPage;
-
-    @BeforeMethod
-    public void setUp() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        homePage = new HomePage(driver);
-        loginPage = new LoginPage(driver);
-        productPage = new ProductPage(driver);
-        cartPage = new CartPage(driver);
-        categoryPage = new CategoryPage(driver);
-        signUpPage = new SignUpPage(driver);
-        contactPage = new ContactPage(driver);
-        homePage.navigateTo("https://www.demoblaze.com/");
-    }
+public class DemoBlazeTest extends BaseTest {
 
     @Test
     public void testHomePageNavigation() {
@@ -60,42 +32,11 @@ public class DemoBlazeTest {
 
     @Test
     public void testLoginFunctionality() {
-        // Click login link and wait for modal
-        homePage.clickLoginLink();
-        try {
-            Thread.sleep(1000); // Wait for modal to appear
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
-        // Enter login credentials (using demo account)
-        loginPage.enterUsername("demo");
-        loginPage.enterPassword("demo");
-        loginPage.clickLoginButton();
-        
-        // Handle alert if it appears
-        try {
-            Thread.sleep(1000); // Wait for alert
-            Alert alert = driver.switchTo().alert();
-            String alertText = alert.getText();
-            if (alertText.contains("Wrong password")) {
-                fail("Login failed with wrong credentials");
-            }
-            alert.accept();
-        } catch (NoAlertPresentException e) {
-            // No alert is fine, means login was successful
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
-        // Wait for welcome message
-        try {
-            Thread.sleep(2000); // Wait for login to complete
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // Use login helper method from BaseTest
+        login("demo", "demo");
         
         // Verify login was successful
+        waitHelper.waitWithTimeout(ExpectedConditions.visibilityOf(loginPage.getWelcomeMessageElement()), 5);
         assertTrue(loginPage.isWelcomeMessageDisplayed(), "Welcome message should be displayed after login");
         String welcomeMessage = loginPage.getWelcomeMessage();
         assertTrue(welcomeMessage.contains("Welcome"), "Welcome message should contain 'Welcome'");
@@ -106,31 +47,9 @@ public class DemoBlazeTest {
         // Verify product list is displayed
         assertTrue(productPage.isProductListDisplayed(), "Product list should be displayed");
         
-        // Select a specific product
+        // Select a specific product and add to cart
         String productName = "Samsung galaxy s6";
-        productPage.clickProductByName(productName);
-        
-        try {
-            Thread.sleep(1000); // Wait for product details to load
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
-        // Add product to cart
-        productPage.addToCart();
-        
-        // Handle alert
-        try {
-            Thread.sleep(1000); // Wait for alert
-            Alert alert = driver.switchTo().alert();
-            String alertText = alert.getText();
-            assertTrue(alertText.contains("Product added"), "Product should be added to cart");
-            alert.accept();
-        } catch (NoAlertPresentException e) {
-            fail("Expected alert was not present");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        addProductToCart(productName);
         
         // Go to cart and verify product is added
         productPage.goToCart();
@@ -139,17 +58,8 @@ public class DemoBlazeTest {
 
     @Test
     public void testCartFunctionality() {
-        // Add product to cart
-        productPage.clickProductByName("Samsung galaxy s6");
-        productPage.addToCart();
-        
-        try {
-            Thread.sleep(2000); // Increased wait time for alert
-            Alert alert = driver.switchTo().alert();
-            alert.accept();
-        } catch (Exception e) {
-            fail("Failed to handle alert: " + e.getMessage());
-        }
+        // Add product to cart using helper method
+        addProductToCart("Samsung galaxy s6");
         
         // Go to cart
         productPage.goToCart();
@@ -158,57 +68,33 @@ public class DemoBlazeTest {
 
     @Test
     public void testCompletePurchase() {
-        System.out.println("Starting testCompletePurchase...");
+        Reporter.log("Starting testCompletePurchase...", true);
         
-        // Add product to cart
-        System.out.println("Adding product to cart...");
-        productPage.clickProductByName("Samsung galaxy s6");
-        productPage.addToCart();
-        
-        try {
-            System.out.println("Waiting for add to cart alert...");
-            Thread.sleep(2000); // Wait for alert
-            Alert alert = driver.switchTo().alert();
-            System.out.println("Alert text: " + alert.getText());
-            alert.accept();
-        } catch (Exception e) {
-            System.out.println("Error handling add to cart alert: " + e.getMessage());
-            fail("Failed to handle alert: " + e.getMessage());
-        }
+        // Add product to cart using helper method
+        addProductToCart("Samsung galaxy s6");
         
         // Go to cart and place order
-        System.out.println("Navigating to cart...");
         productPage.goToCart();
-        
-        System.out.println("Clicking place order...");
         cartPage.clickPlaceOrder();
         
-        try {
-            System.out.println("Filling purchase form...");
-            Thread.sleep(2000); // Wait for modal to appear
-            cartPage.fillPurchaseForm(
-                "Test User",
-                "Test Country",
-                "Test City",
-                "4111111111111111",
-                "12",
-                "2025"
-            );
-            
-            System.out.println("Clicking purchase button...");
-            cartPage.clickPurchase();
-            
-            // Wait for confirmation and verify
-            System.out.println("Getting order confirmation...");
-            String confirmation = cartPage.getOrderConfirmation();
-            System.out.println("Confirmation text: " + confirmation);
-            
-            assertTrue(confirmation.contains("Thank you for your purchase"), 
-                "Order confirmation message should be displayed. Actual message: " + confirmation);
-        } catch (InterruptedException e) {
-            System.out.println("Test interrupted: " + e.getMessage());
-            fail("Test interrupted: " + e.getMessage());
-        }
+        // Fill purchase form and complete order
+        cartPage.fillPurchaseForm(
+            "Test User",
+            "Test Country",
+            "Test City",
+            "4111111111111111",
+            "12",
+            "2025"
+        );
+        
+        cartPage.clickPurchase();
+        
+        // Wait for confirmation and verify
+        String confirmation = cartPage.getOrderConfirmation();
+        Reporter.log("Confirmation text: " + confirmation, true);
+        
+        assertTrue(confirmation.contains("Thank you for your purchase"), 
+            "Order confirmation message should be displayed. Actual message: " + confirmation);
     }
 
     @Test
@@ -235,7 +121,7 @@ public class DemoBlazeTest {
     public void testMonitorsCategory() {
         categoryPage.clickMonitorsCategory();
         List<String> monitorProducts = categoryPage.getProductNames();
-        System.out.println("Monitor products: " + monitorProducts);
+        Reporter.log("Monitor products: " + monitorProducts, true);
         assertTrue(categoryPage.isCategoryPageLoaded("monitor"), "Monitors category should be loaded");
         assertTrue(categoryPage.getProductCount() > 0, "Monitors category should have products");
         assertTrue(monitorProducts.stream().anyMatch(name -> name.contains("Monitor") || 
@@ -261,21 +147,14 @@ public class DemoBlazeTest {
     public void testProductFromCategory() {
         // Select a product from phones category and add to cart
         categoryPage.clickPhonesCategory();
-        try {
-            Thread.sleep(1000); // Wait for category to load
-            productPage.clickProductByName("Samsung galaxy s6");
-            productPage.addToCart();
-            
-            Thread.sleep(2000); // Wait for alert
-            Alert alert = driver.switchTo().alert();
-            alert.accept();
-            
-            // Verify product is in cart
-            productPage.goToCart();
-            assertEquals(cartPage.getCartItemCount(), 1, "Cart should contain one item");
-        } catch (InterruptedException e) {
-            fail("Test interrupted: " + e.getMessage());
-        }
+        waitHelper.waitForPageLoad();
+        
+        // Use the helper method to add product to cart
+        addProductToCart("Samsung galaxy s6");
+        
+        // Verify product is in cart
+        productPage.goToCart();
+        assertEquals(cartPage.getCartItemCount(), 1, "Cart should contain one item");
     }
 
     @Test
@@ -286,11 +165,7 @@ public class DemoBlazeTest {
         
         // Click signup link and wait for modal
         homePage.clickSignUpLink();
-        try {
-            Thread.sleep(1000); // Wait for modal to appear
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        waitHelper.waitForPageLoad();
         
         // Fill in signup form
         signUpPage.enterSignUpUsername(username);
@@ -298,28 +173,11 @@ public class DemoBlazeTest {
         signUpPage.clickSignUpButton();
         
         // Wait for alert and handle it
-        try {
-            Thread.sleep(1000); // Wait for alert to appear
-            Alert alert = driver.switchTo().alert();
-            String alertText = alert.getText();
-            assertTrue(alertText.contains("Sign up successful"), "Alert should indicate successful signup");
-            alert.accept();
-        } catch (NoAlertPresentException e) {
-            fail("Expected alert was not present");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        String alertText = alertHelper.handleAlert("Sign up successful");
+        assertTrue(alertText.contains("Sign up successful"), "Alert should indicate successful signup");
         
         // Verify we can login with new credentials
-        homePage.clickLoginLink();
-        try {
-            Thread.sleep(1000); // Wait for login modal
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        loginPage.enterUsername(username);
-        loginPage.enterPassword(password);
-        loginPage.clickLoginButton();
+        login(username, password);
         assertTrue(loginPage.isWelcomeMessageDisplayed(), "Should be able to login with new credentials");
     }
 
@@ -336,23 +194,58 @@ public class DemoBlazeTest {
         contactPage.sendContactMessage(email, name, message);
         
         // Handle alert
-        try {
-            Thread.sleep(1000); // Wait for alert
-            Alert alert = driver.switchTo().alert();
-            String alertText = alert.getText();
-            assertTrue(alertText.contains("Thanks for the message"), "Contact message should be sent successfully");
-            alert.accept();
-        } catch (NoAlertPresentException e) {
-            fail("Expected alert was not present");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        String alertText = alertHelper.handleAlert("Thanks for the message");
+        assertTrue(alertText.contains("Thanks for the message"), 
+                "Contact message should be sent successfully");
     }
-
-    @AfterMethod
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
+    
+    /**
+     * Data provider for category tests
+     * Provides [category name, expected product brand]
+     */
+    @DataProvider(name = "categoryTestData")
+    public Object[][] getCategoryData() {
+        return new Object[][] {
+            {"phone", "Samsung"},
+            {"laptop", "MacBook"},
+            {"monitor", "Apple"}
+        };
     }
-} 
+    
+    /**
+     * Parameterized test for categories using data provider
+     */
+    @Test(dataProvider = "categoryTestData")
+    public void testProductCategory(String category, String expectedBrand) {
+        // Log test details
+        Reporter.log("Testing " + category + " category, expecting " + expectedBrand + " products", true);
+        
+        // Select appropriate category
+        switch (category.toLowerCase()) {
+            case "phone":
+                categoryPage.clickPhonesCategory();
+                break;
+            case "laptop":
+                categoryPage.clickLaptopsCategory();
+                break;
+            case "monitor":
+                categoryPage.clickMonitorsCategory();
+                break;
+        }
+        
+        // Verify category loaded correctly
+        assertTrue(categoryPage.isCategoryPageLoaded(category), 
+                category + " category page should be loaded");
+        
+        // Verify products exist
+        assertTrue(categoryPage.getProductCount() > 0, 
+                category + " category should have products");
+        
+        // Verify expected brand exists
+        List<String> products = categoryPage.getProductNames();
+        Reporter.log("Found products: " + products, true);
+        
+        assertTrue(products.stream().anyMatch(name -> name.contains(expectedBrand)), 
+                category + " category should contain " + expectedBrand + " products");
+    }
+}

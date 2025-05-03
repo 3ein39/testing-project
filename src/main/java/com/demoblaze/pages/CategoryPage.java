@@ -28,44 +28,39 @@ public class CategoryPage extends BasePage {
     }
 
     public void clickPhonesCategory() {
-        wait.until(ExpectedConditions.elementToBeClickable(phonesCategory)).click();
+        waitHelper.waitForElementToBeClickable(phonesCategory).click();
     }
 
     public void clickLaptopsCategory() {
-        wait.until(ExpectedConditions.elementToBeClickable(laptopsCategory)).click();
+        waitHelper.waitForElementToBeClickable(laptopsCategory).click();
     }
 
     public void clickMonitorsCategory() {
-        wait.until(ExpectedConditions.elementToBeClickable(monitorsCategory)).click();
+        waitHelper.waitForElementToBeClickable(monitorsCategory).click();
     }
 
     public int getProductCount() {
-        try {
-            Thread.sleep(1000); // Wait for products to update
-            wait.until(ExpectedConditions.visibilityOfAllElements(categoryProducts));
-            return categoryProducts.size();
-        } catch (InterruptedException e) {
-            return 0;
-        }
+        // Wait for products to update - replacing Thread.sleep
+        waitHelper.waitForAllElementsVisible(categoryProducts);
+        return categoryProducts.size();
     }
 
     public List<String> getProductNames() {
         List<String> names = new ArrayList<>();
-        try {
-            Thread.sleep(1000); // Wait for products to update
-            wait.until(ExpectedConditions.visibilityOfAllElements(categoryProducts));
-            for (int attempts = 0; attempts < 3; attempts++) {
-                try {
-                    names = categoryProducts.stream()
-                            .map(WebElement::getText)
-                            .toList();
-                    break;
-                } catch (StaleElementReferenceException e) {
-                    if (attempts == 2) throw e;
-                }
+        // Wait for products to update - replacing Thread.sleep
+        waitHelper.waitForAllElementsVisible(categoryProducts);
+        
+        for (int attempts = 0; attempts < 3; attempts++) {
+            try {
+                names = categoryProducts.stream()
+                        .map(WebElement::getText)
+                        .toList();
+                break;
+            } catch (StaleElementReferenceException e) {
+                if (attempts == 2) throw e;
+                // If we get a stale element, wait for page to stabilize
+                waitHelper.waitForPageLoad();
             }
-        } catch (InterruptedException e) {
-            // Handle exception
         }
         return names;
     }
@@ -94,4 +89,4 @@ public class CategoryPage extends BasePage {
             return false;
         }
     }
-} 
+}

@@ -19,28 +19,99 @@ public class LoginPage extends BasePage {
 
     @FindBy(id = "nameofuser")
     private WebElement welcomeMessage;
+    
+    @FindBy(id = "logInModal")
+    private WebElement loginModal;
 
     public LoginPage(WebDriver driver) {
         super(driver);
     }
 
     public void enterUsername(String username) {
-        wait.until(ExpectedConditions.visibilityOf(usernameField)).sendKeys(username);
+        waitHelper.waitForElementVisible(usernameField).sendKeys(username);
     }
 
     public void enterPassword(String password) {
-        wait.until(ExpectedConditions.visibilityOf(passwordField)).sendKeys(password);
+        waitHelper.waitForElementVisible(passwordField).sendKeys(password);
     }
 
     public void clickLoginButton() {
-        wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
+        waitHelper.waitForElementToBeClickable(loginButton).click();
     }
 
     public boolean isWelcomeMessageDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOf(welcomeMessage)).isDisplayed();
+        try {
+            return waitHelper.waitForElementVisible(welcomeMessage).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String getWelcomeMessage() {
-        return wait.until(ExpectedConditions.visibilityOf(welcomeMessage)).getText();
+        return waitHelper.waitForElementVisible(welcomeMessage).getText();
     }
-} 
+    
+    /**
+     * Gets the welcome message element for use in wait conditions
+     * @return the welcome message WebElement
+     */
+    public WebElement getWelcomeMessageElement() {
+        return welcomeMessage;
+    }
+    
+    /**
+     * Gets the login button element for use in wait conditions
+     * @return the login button WebElement
+     */
+    public WebElement getLoginButton() {
+        return loginButton;
+    }
+    
+    /**
+     * Checks if login modal is displayed
+     * @return true if modal is displayed, false otherwise
+     */
+    public boolean isLoginModalDisplayed() {
+        try {
+            return waitHelper.waitForElementVisible(loginModal).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Checks if username field is displayed
+     * @return true if field is displayed, false otherwise
+     */
+    public boolean isUsernameFieldDisplayed() {
+        try {
+            return waitHelper.waitForElementVisible(usernameField).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Checks if password field is displayed
+     * @return true if field is displayed, false otherwise
+     */
+    public boolean isPasswordFieldDisplayed() {
+        try {
+            return waitHelper.waitForElementVisible(passwordField).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Checks if login button is displayed
+     * @return true if button is displayed, false otherwise
+     */
+    public boolean isLoginButtonDisplayed() {
+        try {
+            return waitHelper.waitForElementVisible(loginButton).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}

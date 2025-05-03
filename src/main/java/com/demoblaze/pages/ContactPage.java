@@ -23,6 +23,9 @@ public class ContactPage extends BasePage {
 
     @FindBy(xpath = "//button[contains(text(),'Send message')]")
     private WebElement sendMessageButton;
+    
+    @FindBy(id = "exampleModal")
+    private WebElement contactModal;
 
     public ContactPage(WebDriver driver) {
         super(driver);
@@ -30,23 +33,23 @@ public class ContactPage extends BasePage {
     }
 
     public void clickContactLink() {
-        wait.until(ExpectedConditions.elementToBeClickable(contactLink)).click();
+        waitHelper.waitForElementToBeClickable(contactLink).click();
     }
 
     public void enterContactEmail(String email) {
-        wait.until(ExpectedConditions.visibilityOf(contactEmailField)).sendKeys(email);
+        waitHelper.waitForElementVisible(contactEmailField).sendKeys(email);
     }
 
     public void enterContactName(String name) {
-        wait.until(ExpectedConditions.visibilityOf(contactNameField)).sendKeys(name);
+        waitHelper.waitForElementVisible(contactNameField).sendKeys(name);
     }
 
     public void enterMessage(String message) {
-        wait.until(ExpectedConditions.visibilityOf(messageField)).sendKeys(message);
+        waitHelper.waitForElementVisible(messageField).sendKeys(message);
     }
 
     public void clickSendMessageButton() {
-        wait.until(ExpectedConditions.elementToBeClickable(sendMessageButton)).click();
+        waitHelper.waitForElementToBeClickable(sendMessageButton).click();
     }
 
     public void sendContactMessage(String email, String name, String message) {
@@ -55,4 +58,16 @@ public class ContactPage extends BasePage {
         enterMessage(message);
         clickSendMessageButton();
     }
-} 
+    
+    /**
+     * Checks if contact modal is displayed
+     * @return true if modal is displayed, false otherwise
+     */
+    public boolean isContactModalDisplayed() {
+        try {
+            return waitHelper.waitForElementVisible(contactModal).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}

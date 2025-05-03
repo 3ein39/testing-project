@@ -20,6 +20,9 @@ public class HomePage extends BasePage {
 
     @FindBy(linkText = "Contact")
     private WebElement contactLink;
+    
+    @FindBy(linkText = "Home")
+    private WebElement homeLink;
 
     @FindBy(linkText = "Phones")
     private WebElement phonesCategory;
@@ -39,31 +42,36 @@ public class HomePage extends BasePage {
     }
 
     public void clickLoginLink() {
-        wait.until(ExpectedConditions.elementToBeClickable(loginLink)).click();
+        waitHelper.waitForElementToBeClickable(loginLink).click();
     }
 
     public void clickSignUpLink() {
-        wait.until(ExpectedConditions.elementToBeClickable(signUpLink)).click();
+        waitHelper.waitForElementToBeClickable(signUpLink).click();
     }
 
     public void clickCartLink() {
-        wait.until(ExpectedConditions.elementToBeClickable(cartLink)).click();
+        waitHelper.waitForElementToBeClickable(cartLink).click();
     }
 
     public void clickContactLink() {
-        wait.until(ExpectedConditions.elementToBeClickable(contactLink)).click();
+        waitHelper.waitForElementToBeClickable(contactLink).click();
+    }
+    
+    public void clickHomeLink() {
+        waitHelper.waitForElementToBeClickable(homeLink).click();
+        waitHelper.waitForPageLoad();
     }
 
     public void clickPhonesCategory() {
-        wait.until(ExpectedConditions.elementToBeClickable(phonesCategory)).click();
+        waitHelper.waitForElementToBeClickable(phonesCategory).click();
     }
 
     public void clickLaptopsCategory() {
-        wait.until(ExpectedConditions.elementToBeClickable(laptopsCategory)).click();
+        waitHelper.waitForElementToBeClickable(laptopsCategory).click();
     }
 
     public void clickMonitorsCategory() {
-        wait.until(ExpectedConditions.elementToBeClickable(monitorsCategory)).click();
+        waitHelper.waitForElementToBeClickable(monitorsCategory).click();
     }
 
     public String getPageTitle() {
@@ -71,34 +79,34 @@ public class HomePage extends BasePage {
     }
 
     public boolean isLoginLinkDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOf(loginLink)).isDisplayed();
+        return waitHelper.waitForElementVisible(loginLink).isDisplayed();
     }
 
     public boolean isSignUpLinkDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOf(signUpLink)).isDisplayed();
+        return waitHelper.waitForElementVisible(signUpLink).isDisplayed();
     }
 
     public boolean isCartLinkDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOf(cartLink)).isDisplayed();
+        return waitHelper.waitForElementVisible(cartLink).isDisplayed();
     }
 
     public boolean isContactLinkDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOf(contactLink)).isDisplayed();
+        return waitHelper.waitForElementVisible(contactLink).isDisplayed();
     }
 
     public boolean isPhonesCategoryDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOf(phonesCategory)).isDisplayed();
+        return waitHelper.waitForElementVisible(phonesCategory).isDisplayed();
     }
 
     public boolean isLaptopsCategoryDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOf(laptopsCategory)).isDisplayed();
+        return waitHelper.waitForElementVisible(laptopsCategory).isDisplayed();
     }
 
     public boolean isMonitorsCategoryDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOf(monitorsCategory)).isDisplayed();
+        return waitHelper.waitForElementVisible(monitorsCategory).isDisplayed();
     }
 
     public boolean isProductListDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOf(productList)).isDisplayed();
+        return waitHelper.waitForElementVisible(productList).isDisplayed();
     }
-} 
+}
