@@ -118,19 +118,6 @@ public class DemoBlazeTest extends BaseTest {
     }
 
     @Test
-    public void testMonitorsCategory() {
-        categoryPage.clickMonitorsCategory();
-        List<String> monitorProducts = categoryPage.getProductNames();
-        Reporter.log("Monitor products: " + monitorProducts, true);
-        assertTrue(categoryPage.isCategoryPageLoaded("monitor"), "Monitors category should be loaded");
-        assertTrue(categoryPage.getProductCount() > 0, "Monitors category should have products");
-        assertTrue(monitorProducts.stream().anyMatch(name -> name.contains("Monitor") || 
-                                                          name.contains("ASUS") || 
-                                                          name.contains("Apple")), 
-            "Monitors category should contain monitor products");
-    }
-
-    @Test
     public void testCategoryNavigation() {
         // Test navigation between categories
         categoryPage.clickPhonesCategory();
@@ -211,7 +198,7 @@ public class DemoBlazeTest extends BaseTest {
             {"monitor", "Apple"}
         };
     }
-    
+
     /**
      * Parameterized test for categories using data provider
      */
@@ -219,7 +206,7 @@ public class DemoBlazeTest extends BaseTest {
     public void testProductCategory(String category, String expectedBrand) {
         // Log test details
         Reporter.log("Testing " + category + " category, expecting " + expectedBrand + " products", true);
-        
+
         // Select appropriate category
         switch (category.toLowerCase()) {
             case "phone":
@@ -232,20 +219,20 @@ public class DemoBlazeTest extends BaseTest {
                 categoryPage.clickMonitorsCategory();
                 break;
         }
-        
+
         // Verify category loaded correctly
-        assertTrue(categoryPage.isCategoryPageLoaded(category), 
+        assertTrue(categoryPage.isCategoryPageLoaded(category),
                 category + " category page should be loaded");
-        
+
         // Verify products exist
-        assertTrue(categoryPage.getProductCount() > 0, 
+        assertTrue(categoryPage.getProductCount() > 0,
                 category + " category should have products");
-        
+
         // Verify expected brand exists
         List<String> products = categoryPage.getProductNames();
         Reporter.log("Found products: " + products, true);
-        
-        assertTrue(products.stream().anyMatch(name -> name.contains(expectedBrand)), 
+
+        assertTrue(products.stream().anyMatch(name -> name.contains(expectedBrand)),
                 category + " category should contain " + expectedBrand + " products");
     }
 }

@@ -31,14 +31,14 @@ public class HomePageTest extends BaseTest {
 
     @Test
     public void testNavigationBetweenPages() {
-        // Test navigation to contact page
-        homePage.clickContactLink();
-        assertTrue(contactPage.isContactModalDisplayed(), "Contact modal should be displayed");
-        
         // Navigate to cart page
         homePage.clickCartLink();
         assertTrue(driver.getCurrentUrl().contains("cart"), "URL should contain 'cart'");
-        
+
+        // Test navigation to contact page
+        homePage.clickContactLink();
+        assertTrue(contactPage.isContactModalDisplayed(), "Contact modal should be displayed");
+
         // Navigate back to home
         homePage.clickHomeLink();
         assertTrue(productPage.isProductListDisplayed(), "Product list should be displayed on home page");
