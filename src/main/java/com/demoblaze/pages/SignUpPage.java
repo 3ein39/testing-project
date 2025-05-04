@@ -5,6 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.interactions.Actions;
 
 public class SignUpPage extends BasePage {
 
@@ -16,6 +18,12 @@ public class SignUpPage extends BasePage {
 
     @FindBy(xpath = "//button[contains(text(),'Sign up')]")
     private WebElement signUpButton;
+    
+    @FindBy(id = "signInModal")
+    private WebElement signUpModal;
+    
+    @FindBy(xpath = "//div[@id='signInModal']//button[contains(@class,'close')]")
+    private WebElement closeButton;
 
     public SignUpPage(WebDriver driver) {
         super(driver);
@@ -38,4 +46,30 @@ public class SignUpPage extends BasePage {
         enterSignUpPassword(password);
         clickSignUpButton();
     }
-} 
+    
+    /**
+     * Checks if sign up modal is displayed
+     * @return true if modal is displayed, false otherwise
+     */
+    public boolean isSignUpModalDisplayed() {
+        try {
+            return waitHelper.waitForElementVisible(signUpModal).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Presses the Escape key to close modal
+     */
+    public void pressEscapeKey() {
+        new Actions(driver).sendKeys(Keys.ESCAPE).perform();
+    }
+    
+    /**
+     * Clicks the close button to close the modal
+     */
+    public void clickCloseButton() {
+        waitHelper.waitForElementToBeClickable(closeButton).click();
+    }
+}

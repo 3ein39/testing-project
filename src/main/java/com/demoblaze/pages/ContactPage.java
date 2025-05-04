@@ -6,6 +6,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.interactions.Actions;
 
 public class ContactPage extends BasePage {
 
@@ -26,6 +28,9 @@ public class ContactPage extends BasePage {
     
     @FindBy(id = "exampleModal")
     private WebElement contactModal;
+    
+    @FindBy(xpath = "//div[@id='exampleModal']//button[contains(@class,'close')]")
+    private WebElement closeButton;
 
     public ContactPage(WebDriver driver) {
         super(driver);
@@ -69,5 +74,19 @@ public class ContactPage extends BasePage {
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    /**
+     * Presses the Escape key to close modal
+     */
+    public void pressEscapeKey() {
+        new Actions(driver).sendKeys(Keys.ESCAPE).perform();
+    }
+    
+    /**
+     * Clicks the close button to close the modal
+     */
+    public void clickCloseButton() {
+        waitHelper.waitForElementToBeClickable(closeButton).click();
     }
 }
