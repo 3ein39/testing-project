@@ -128,7 +128,65 @@ public class CartPage extends BasePage {
         }
     }
 
+    public String getCompleteOrderConfirmation() {
+        try {
+            System.out.println("Getting complete order confirmation...");
+            
+            // Wait for the confirmation dialog to be visible
+            By confirmationDialogLocator = By.cssSelector(".sweet-alert");
+            WebElement confirmationDialog = waitHelper.waitWithTimeout(
+                ExpectedConditions.visibilityOfElementLocated(confirmationDialogLocator), 
+                20
+            );
+            
+            // Get all text elements in the confirmation dialog
+            List<WebElement> confirmationElements = confirmationDialog.findElements(By.tagName("p"));
+            StringBuilder confirmationText = new StringBuilder();
+            
+            // Get the header first
+            WebElement headerElement = confirmationDialog.findElement(By.tagName("h2"));
+            confirmationText.append(headerElement.getText()).append("\n");
+            
+            // Append all paragraph texts
+            for (WebElement element : confirmationElements) {
+                confirmationText.append(element.getText()).append("\n");
+            }
+            
+            String result = confirmationText.toString();
+            System.out.println("Complete confirmation text: " + result);
+            return result;
+        } catch (Exception e) {
+            System.out.println("Error getting complete order confirmation: " + e.getMessage());
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     public boolean isCartEmpty() {
         return getCartItemCount() == 0;
+    }
+
+    public WebElement getNameField() {
+        return nameField;
+    }
+
+    public WebElement getCardField() {
+        return cardField;
+    }
+
+    public WebElement getCountryField() {
+        return countryField;
+    }
+
+    public WebElement getCityField() {
+        return cityField;
+    }
+
+    public WebElement getMonthField() {
+        return monthField;
+    }
+
+    public WebElement getYearField() {
+        return yearField;
     }
 }

@@ -7,6 +7,9 @@ import org.testng.Reporter;
 import static org.testng.Assert.*;
 
 import java.util.List;
+import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DemoBlazeTest extends BaseTest {
 
@@ -130,6 +133,12 @@ public class DemoBlazeTest extends BaseTest {
 
     @Test
     public void testLaptopsCategory() {
+        // wait 500 ms
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Reporter.log(e.toString());
+        }
         categoryPage.clickLaptopsCategory();
         assertTrue(categoryPage.isCategoryPageLoaded("laptop"), "Laptops category page should be loaded");
         assertTrue(categoryPage.getProductCount() > 0, "Laptops category should have products");
@@ -341,5 +350,126 @@ public class DemoBlazeTest extends BaseTest {
         // The test asserts that the confirmation appears, demonstrating the validation issue
         assertFalse(confirmation.contains("Thank you for your purchase"),
             "Order confirmation should not appear with empty cart, highlighting the validation issue");
+    }
+
+    /**
+     * Test to verify that the system allows purchase with only name and credit card
+     * filled, which is a validation issue
+     */
+    @Test
+    public void testPartialPurchaseFormValidation() {
+        Reporter.log("Starting testPartialPurchaseFormValidation...", true);
+        
+        // Add product to cart using helper method
+        addProductToCart("Samsung galaxy s6");
+        
+        // Go to cart and place order
+        productPage.goToCart();
+        cartPage.clickPlaceOrder();
+        
+        // Fill only name and credit card number, leaving other fields empty
+        waitHelper.waitForElementVisible(cartPage.getNameField()).sendKeys("Test User");
+        waitHelper.waitForElementVisible(cartPage.getCardField()).sendKeys("4111111111111111");
+        
+        // This should fail in a real application, but will succeed due to lack of validation
+        cartPage.clickPurchase();
+        
+        // Wait for confirmation and verify that the order succeeds despite incomplete form
+        String confirmation = cartPage.getOrderConfirmation();
+        Reporter.log("Confirmation text: " + confirmation, true);
+        
+        // Assert that confirmation appears even with incomplete form data
+        assertFalse(confirmation.contains("Thank you for your purchase"),
+            "Order confirmation should not appear with incomplete form data, highlighting the validation issue");
+    }
+
+    /**
+     * Test to verify that the date shown in order confirmation has month value one less than current month
+     * The format is MM/DD/YYYY where MM is one month behind the current month
+     */
+    @Test
+    public void testPurchaseDateIsCorrect() {
+        Reporter.log("Starting testPurchaseIsCorrect...", true);
+        
+        // Add product to cart using helper method
+        addProductToCart("Samsung galaxy s6");
+        
+        // Go to cart and place order
+        productPage.goToCart();
+        cartPage.clickPlaceOrder();
+        
+        // Fill purchase form and complete order
+        cartPage.fillPurchaseForm(
+            "Test User",
+            "Test Country",
+            "Test City",
+            "4111111111111111",
+            "12",
+            "2025"
+        );
+        
+        cartPage.clickPurchase();
+        
+        // Wait for confirmation and get the complete confirmation text
+        String confirmationText = cartPage.getCompleteOrderConfirmation();
+        Reporter.log("Full confirmation text: " + confirmationText, true);
+        
+        // Get current date information
+        Calendar currentDate = Calendar.getInstance();
+        int currentMonth = currentDate.get(Calendar.MONTH) + 1; // Calendar months are zero-based
+        int currentDay = currentDate.get(Calendar.DAY_OF_MONTH);
+        int currentYear = currentDate.get(Calendar.YEAR);
+        
+        Reporter.log("Current date: " + currentDay + "/" + currentMonth + "/" + currentYear, true);
+        
+        // Extract date from confirmation text using regex
+        Pattern datePattern = Pattern.compile("Date:\\s*(\\d+)/(\\d+)/(\\d+)");
+        Matcher matcher = datePattern.matcher(confirmationText);
+        
+        if (matcher.find()) {
+            int displayedMonth = Integer.parseInt(matcher.group(2));
+            int displayedDay = Integer.parseInt(matcher.group(1));
+            int displayedYear = Integer.parseInt(matcher.group(3));
+            
+            Reporter.log("Displayed date: " + displayedDay + "/" + displayedMonth + "/" + displayedYear, true);
+            
+            // Assert that expected date is equal to current date
+            assertEquals(displayedMonth, currentMonth, "Displayed month should be equal to current month");
+
+            assertEquals(displayedDay, currentDay, "Displayed day should be equal to current day");
+
+            assertEquals(displayedYear, currentYear, "Displayed year should be equal to current year");
+
+        } else {
+            fail("Could not find date in confirmation text: " + confirmationText);
+        }
+    }
+
+    /**
+     * Test to verify that the Contact Us modal allows sending empty data
+     */
+    @Test
+    public void testEmptyContactFormSubmission() {
+        Reporter.log("Starting testEmptyContactFormSubmission...", true);
+        
+        // Click contact link to open the modal
+        homePage.clickContactLink();
+        
+        // Verify contact modal is displayed
+        assertTrue(contactPage.isContactModalDisplayed(), "Contact modal should be displayed");
+        
+        // Submit the form without filling in any data
+        contactPage.clickSendMessageButton();
+        
+        // The form should validate inputs, but due to lack of validation, it allows submission
+        // Wait for the alert and verify it appears despite empty fields
+        String alertText = alertHelper.handleAlert("Thanks for the message");
+        
+        // Log the alert text for verification
+        Reporter.log("Alert text: " + alertText, true);
+        
+        // Assert that the message was sent despite empty fields
+        assertFalse(alertText.contains("Thanks for the message"),
+                "Contact form should not allow empty submission, but it does, highlighting the validation issue");
     }
 }
