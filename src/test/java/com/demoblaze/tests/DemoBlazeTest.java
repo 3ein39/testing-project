@@ -33,7 +33,7 @@ public class DemoBlazeTest extends BaseTest {
     @Test
     public void testLoginFunctionality() {
         // Use login helper method from BaseTest
-        login("demo", "demo");
+        login("reveari", "reveari");
         
         // Verify login was successful
         waitHelper.waitWithTimeout(ExpectedConditions.visibilityOf(loginPage.getWelcomeMessageElement()), 5);
@@ -265,5 +265,81 @@ public class DemoBlazeTest extends BaseTest {
 
         assertTrue(products.stream().anyMatch(name -> name.contains(expectedBrand)),
                 category + " category should contain " + expectedBrand + " products");
+    }
+
+    /**
+     * Test to verify that the system should not accept non-numeric values in 
+     * card/month/year fields but does due to lack of validation
+     */
+    @Test
+    public void testInvalidPurchaseFormData() {
+        Reporter.log("Starting testInvalidPurchaseFormData...", true);
+        
+        // Add product to cart using helper method
+        addProductToCart("Samsung galaxy s6");
+        
+        // Go to cart and place order
+        productPage.goToCart();
+        cartPage.clickPlaceOrder();
+        
+        // Fill purchase form with invalid data - strings in month/year fields
+        cartPage.fillPurchaseForm(
+            "Test User",
+            "Test Country",
+            "Test City",
+            "Invalid-Card-Number",  // Invalid card number with text
+            "ABC",                  // Invalid month (non-numeric)
+            "XYZ"                   // Invalid year (non-numeric)
+        );
+        
+        // This should fail in a real application, but will succeed due to lack of validation
+        cartPage.clickPurchase();
+        
+        // Wait for confirmation and verify that the order succeeds despite invalid data
+        String confirmation = cartPage.getOrderConfirmation();
+        Reporter.log("Confirmation text: " + confirmation, true);
+        
+        // The test asserts that the confirmation appears, demonstrating the validation issue
+        assertFalse(confirmation.contains("Thank you for your purchase"),
+            "Order confirmation should appear despite invalid numeric data, highlighting the validation issue");
+    }
+    
+    /**
+     * Test to verify that the system should not allow purchase with an empty cart
+     * but does due to lack of validation
+     */
+    @Test
+    public void testEmptyCartPurchase() {
+        Reporter.log("Starting testEmptyCartPurchase...", true);
+        
+        // Go directly to cart without adding any products
+        homePage.clickCartLink();
+        
+        // Verify the cart is empty
+        assertTrue(cartPage.isCartEmpty(), "Cart should be empty for this test");
+        
+        // Try to place order with empty cart
+        cartPage.clickPlaceOrder();
+        
+        // Fill purchase form
+        cartPage.fillPurchaseForm(
+            "Test User",
+            "Test Country",
+            "Test City",
+            "4111111111111111",
+            "12",
+            "2025"
+        );
+        
+        // This should fail in a real application, but will succeed due to lack of validation
+        cartPage.clickPurchase();
+        
+        // Wait for confirmation and verify that the order succeeds despite empty cart
+        String confirmation = cartPage.getOrderConfirmation();
+        Reporter.log("Confirmation text: " + confirmation, true);
+        
+        // The test asserts that the confirmation appears, demonstrating the validation issue
+        assertFalse(confirmation.contains("Thank you for your purchase"),
+            "Order confirmation should not appear with empty cart, highlighting the validation issue");
     }
 }
