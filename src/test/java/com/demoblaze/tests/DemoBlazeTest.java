@@ -53,6 +53,17 @@ public class DemoBlazeTest extends BaseTest {
         
         // Go to cart and verify product is added
         productPage.goToCart();
+        
+        // Add an explicit wait for cart items to be visible
+        waitHelper.waitForPageLoad();
+        try {
+            // Wait a short time for the cart to update
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+        // Verify cart has exactly one item
         assertEquals(cartPage.getCartItemCount(), 1, "Cart should contain one item");
     }
 
@@ -63,6 +74,16 @@ public class DemoBlazeTest extends BaseTest {
         
         // Go to cart
         productPage.goToCart();
+        
+        // Add an explicit wait for cart items to be visible
+        waitHelper.waitForPageLoad();
+        try {
+            // Wait a short time for the cart to update
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
         assertEquals(cartPage.getCartItemCount(), 1, "Cart should contain one item");
     }
 
@@ -141,6 +162,16 @@ public class DemoBlazeTest extends BaseTest {
         
         // Verify product is in cart
         productPage.goToCart();
+        
+        // Add an explicit wait for cart items to be visible
+        waitHelper.waitForPageLoad();
+        try {
+            // Wait a short time for the cart to update
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
         assertEquals(cartPage.getCartItemCount(), 1, "Cart should contain one item");
     }
 
