@@ -44,6 +44,130 @@ public class DemoBlazeTest extends BaseTest {
         String welcomeMessage = loginPage.getWelcomeMessage();
         assertTrue(welcomeMessage.contains("Welcome"), "Welcome message should contain 'Welcome'");
     }
+    
+    /**
+     * Test login with invalid credentials (wrong password)
+     */
+    @Test
+    public void testLoginWithWrongPassword() {
+        Reporter.log("Starting testLoginWithWrongPassword...", true);
+        
+        // Open login modal
+        homePage.clickLoginLink();
+        
+        // Enter valid username but wrong password
+        loginPage.enterUsername("reveari");
+        loginPage.enterPassword("wrongpassword");
+        loginPage.clickLoginButton();
+        
+        // Check for error alert
+        String alertText = alertHelper.handleAlert("Wrong password");
+        assertTrue(alertText.contains("Wrong password"), 
+                "Alert should indicate wrong password. Actual: " + alertText);
+                
+        // Verify user is not logged in (welcome message not displayed)
+        assertFalse(loginPage.isWelcomeMessageDisplayed(), 
+                "Welcome message should not be displayed after failed login");
+    }
+    
+    /**
+     * Test login with non-existent user
+     */
+    @Test
+    public void testLoginWithNonExistentUser() {
+        Reporter.log("Starting testLoginWithNonExistentUser...", true);
+        
+        // Generate a random username that shouldn't exist
+        String nonExistentUser = "nonexistent" + System.currentTimeMillis();
+        
+        // Open login modal
+        homePage.clickLoginLink();
+        
+        // Enter non-existent username
+        loginPage.enterUsername(nonExistentUser);
+        loginPage.enterPassword("anypassword");
+        loginPage.clickLoginButton();
+        
+        // Check for error alert
+        String alertText = alertHelper.handleAlert("User does not exist");
+        assertTrue(alertText.contains("User does not exist"), 
+                "Alert should indicate user does not exist. Actual: " + alertText);
+                
+        // Verify user is not logged in
+        assertFalse(loginPage.isWelcomeMessageDisplayed(), 
+                "Welcome message should not be displayed after failed login");
+    }
+    
+    /**
+     * Test login with empty credentials
+     */
+    @Test
+    public void testLoginWithEmptyCredentials() {
+        Reporter.log("Starting testLoginWithEmptyCredentials...", true);
+        
+        // Open login modal
+        homePage.clickLoginLink();
+        
+        // Click login without entering credentials
+        loginPage.clickLoginButton();
+        
+        // Check for error alert
+        String alertText = alertHelper.handleAlert("Please fill");
+        assertTrue(alertText.contains("Please fill") || alertText.contains("empty"), 
+                "Alert should indicate empty fields. Actual: " + alertText);
+                
+        // Verify modal is still displayed
+        assertTrue(loginPage.isLoginModalDisplayed(), 
+                "Login modal should still be displayed after failed login");
+    }
+    
+    /**
+     * Test login with empty username
+     */
+    @Test
+    public void testLoginWithEmptyUsername() {
+        Reporter.log("Starting testLoginWithEmptyUsername...", true);
+        
+        // Open login modal
+        homePage.clickLoginLink();
+        
+        // Enter only password
+        loginPage.enterPassword("somepassword");
+        loginPage.clickLoginButton();
+        
+        // Check for error alert
+        String alertText = alertHelper.handleAlert("Please fill");
+        assertTrue(alertText.contains("Please fill") || alertText.contains("empty"), 
+                "Alert should indicate empty fields. Actual: " + alertText);
+                
+        // Verify modal is still displayed
+        assertTrue(loginPage.isLoginModalDisplayed(), 
+                "Login modal should still be displayed after failed login");
+    }
+    
+    /**
+     * Test login with empty password
+     */
+    @Test
+    public void testLoginWithEmptyPassword() {
+        Reporter.log("Starting testLoginWithEmptyPassword...", true);
+        
+        // Open login modal
+        homePage.clickLoginLink();
+        
+        // Enter only username
+        loginPage.enterUsername("someusername");
+        loginPage.clickLoginButton();
+        
+        // Check for error alert
+        String alertText = alertHelper.handleAlert("Please fill");
+        assertTrue(alertText.contains("Please fill") || alertText.contains("empty"), 
+                "Alert should indicate empty fields. Actual: " + alertText);
+                
+        // Verify modal is still displayed
+        assertTrue(loginPage.isLoginModalDisplayed(), 
+                "Login modal should still be displayed after failed login");
+    }
 
     @Test
     public void testProductSelection() {
@@ -206,6 +330,154 @@ public class DemoBlazeTest extends BaseTest {
         // Verify we can login with new credentials
         login(username, password);
         assertTrue(loginPage.isWelcomeMessageDisplayed(), "Should be able to login with new credentials");
+    }
+    
+    /**
+     * Test signup with empty credentials
+     */
+    @Test
+    public void testSignUpWithEmptyCredentials() {
+        Reporter.log("Starting testSignUpWithEmptyCredentials...", true);
+        
+        // Open signup modal
+        homePage.clickSignUpLink();
+        
+        // Click signup without entering credentials
+        signUpPage.clickSignUpButton();
+        
+        // Check for error alert
+        String alertText = alertHelper.handleAlert("Please fill");
+        assertTrue(alertText.contains("Please fill") || alertText.contains("empty"), 
+                "Alert should indicate empty fields. Actual: " + alertText);
+                
+        // Verify modal is still displayed
+        assertTrue(signUpPage.isSignUpModalDisplayed(), 
+                "Sign up modal should still be displayed after failed signup");
+    }
+    
+    /**
+     * Test signup with empty username
+     */
+    @Test
+    public void testSignUpWithEmptyUsername() {
+        Reporter.log("Starting testSignUpWithEmptyUsername...", true);
+        
+        // Open signup modal
+        homePage.clickSignUpLink();
+        
+        // Enter only password
+        signUpPage.enterSignUpPassword("somepassword");
+        signUpPage.clickSignUpButton();
+        
+        // Check for error alert
+        String alertText = alertHelper.handleAlert("Please fill");
+        assertTrue(alertText.contains("Please fill") || alertText.contains("empty"), 
+                "Alert should indicate empty fields. Actual: " + alertText);
+                
+        // Verify modal is still displayed
+        assertTrue(signUpPage.isSignUpModalDisplayed(), 
+                "Sign up modal should still be displayed after failed signup");
+    }
+    
+    /**
+     * Test signup with empty password
+     */
+    @Test
+    public void testSignUpWithEmptyPassword() {
+        Reporter.log("Starting testSignUpWithEmptyPassword...", true);
+        
+        // Open signup modal
+        homePage.clickSignUpLink();
+        
+        // Enter only username
+        signUpPage.enterSignUpUsername("someusername");
+        signUpPage.clickSignUpButton();
+        
+        // Check for error alert
+        String alertText = alertHelper.handleAlert("Please fill");
+        assertTrue(alertText.contains("Please fill") || alertText.contains("empty"), 
+                "Alert should indicate empty fields. Actual: " + alertText);
+                
+        // Verify modal is still displayed
+        assertTrue(signUpPage.isSignUpModalDisplayed(), 
+                "Sign up modal should still be displayed after failed signup");
+    }
+    
+    /**
+     * Test signup with special characters in username
+     */
+    @Test
+    public void testSignUpWithSpecialCharacters() {
+        Reporter.log("Starting testSignUpWithSpecialCharacters...", true);
+        
+        // Open signup modal
+        homePage.clickSignUpLink();
+        
+        // Enter username with special characters
+        signUpPage.enterSignUpUsername("user@#$%^&*()");
+        signUpPage.enterSignUpPassword("password");
+        signUpPage.clickSignUpButton();
+        
+        // Check result - this may succeed or fail depending on implementation
+        // If it succeeds, we should verify we can login with these credentials
+        if (alertHelper.isAlertPresent()) {
+            String alertText = alertHelper.handleAlert("");
+            if (alertText.contains("Sign up successful")) {
+                Reporter.log("Special characters in username were accepted", true);
+                
+                // Try to log in with this username
+                login("user@#$%^&*()", "password");
+                assertTrue(loginPage.isWelcomeMessageDisplayed(), 
+                        "Should be able to log in with special character username");
+            } else {
+                Reporter.log("Special characters in username were rejected: " + alertText, true);
+                assertTrue(alertText.contains("invalid") || alertText.contains("special"), 
+                        "Alert should indicate invalid characters. Actual: " + alertText);
+            }
+        }
+    }
+    
+    /**
+     * Test signup with very long username and password
+     */
+    @Test
+    public void testSignUpWithVeryLongCredentials() {
+        Reporter.log("Starting testSignUpWithVeryLongCredentials...", true);
+        
+        // Generate very long credentials
+        StringBuilder longUsername = new StringBuilder("user");
+        StringBuilder longPassword = new StringBuilder("pass");
+        
+        // Add 100 characters to each
+        for (int i = 0; i < 100; i++) {
+            longUsername.append("a");
+            longPassword.append("b");
+        }
+        
+        // Open signup modal
+        homePage.clickSignUpLink();
+        
+        // Enter very long credentials
+        signUpPage.enterSignUpUsername(longUsername.toString());
+        signUpPage.enterSignUpPassword(longPassword.toString());
+        signUpPage.clickSignUpButton();
+        
+        // Check result - this may succeed or fail depending on implementation
+        if (alertHelper.isAlertPresent()) {
+            String alertText = alertHelper.handleAlert("");
+            if (alertText.contains("Sign up successful")) {
+                Reporter.log("Very long credentials were accepted", true);
+                
+                // Try to log in with these credentials
+                login(longUsername.toString(), longPassword.toString());
+                assertTrue(loginPage.isWelcomeMessageDisplayed(), 
+                        "Should be able to log in with very long credentials");
+            } else {
+                Reporter.log("Very long credentials were rejected: " + alertText, true);
+                assertTrue(alertText.contains("too long") || alertText.contains("invalid"), 
+                        "Alert should indicate credentials too long. Actual: " + alertText);
+            }
+        }
     }
 
     @Test
