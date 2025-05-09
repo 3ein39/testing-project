@@ -26,7 +26,6 @@ public class ProductPage extends BasePage {
     public void clickProductByName(String productName) {
         for (int attempts = 0; attempts < 3; attempts++) {
             try {
-                // Replace Thread.sleep with explicit wait
                 waitHelper.waitForPageLoad();
                 waitHelper.waitForAllElementsVisible(productLinks);
                 

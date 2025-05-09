@@ -179,12 +179,6 @@ public class DemoBlazeTest extends BaseTest {
         
         // Add an explicit wait for cart items to be visible
         waitHelper.waitForPageLoad();
-        try {
-            // Wait a short time for the cart to update
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         
         // Verify cart has exactly one item
         assertEquals(cartPage.getCartItemCount(), 1, "Cart should contain one item");
@@ -198,14 +192,7 @@ public class DemoBlazeTest extends BaseTest {
         // Go to cart
         productPage.goToCart();
         
-        // Add an explicit wait for cart items to be visible
         waitHelper.waitForPageLoad();
-        try {
-            // Wait a short time for the cart to update
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         
         assertEquals(cartPage.getCartItemCount(), 1, "Cart should contain one item");
     }
@@ -253,12 +240,7 @@ public class DemoBlazeTest extends BaseTest {
 
     @Test
     public void testLaptopsCategory() {
-        // wait 500 ms
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Reporter.log(e.toString());
-        }
+
         categoryPage.clickLaptopsCategory();
         assertTrue(categoryPage.isCategoryPageLoaded("laptop"), "Laptops category page should be loaded");
         assertTrue(categoryPage.getProductCount() > 0, "Laptops category should have products");
@@ -269,7 +251,6 @@ public class DemoBlazeTest extends BaseTest {
 
     @Test
     public void testCategoryNavigation() {
-        // Test navigation between categories
         categoryPage.clickPhonesCategory();
         assertTrue(categoryPage.isCategoryPageLoaded("phone"), "Should be on phones category");
         
@@ -282,55 +263,38 @@ public class DemoBlazeTest extends BaseTest {
 
     @Test
     public void testProductFromCategory() {
-        // Select a product from phones category and add to cart
         categoryPage.clickPhonesCategory();
         waitHelper.waitForPageLoad();
         
-        // Use the helper method to add product to cart
         addProductToCart("Samsung galaxy s6");
         
-        // Verify product is in cart
         productPage.goToCart();
         
-        // Add an explicit wait for cart items to be visible
         waitHelper.waitForPageLoad();
-        try {
-            // Wait a short time for the cart to update
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
+  
         assertEquals(cartPage.getCartItemCount(), 1, "Cart should contain one item");
     }
 
     @Test
     public void testSignUpFunctionality() {
-        // Generate a unique username
         String username = "testuser" + System.currentTimeMillis();
         String password = "testpass";
         
-        // Click signup link and wait for modal
         homePage.clickSignUpLink();
         waitHelper.waitForPageLoad();
         
-        // Fill in signup form
         signUpPage.enterSignUpUsername(username);
         signUpPage.enterSignUpPassword(password);
         signUpPage.clickSignUpButton();
         
-        // Wait for alert and handle it
         String alertText = alertHelper.handleAlert("Sign up successful");
         assertTrue(alertText.contains("Sign up successful"), "Alert should indicate successful signup");
         
-        // Verify we can login with new credentials
         login(username, password);
         assertTrue(loginPage.isWelcomeMessageDisplayed(), "Should be able to login with new credentials");
     }
     
-    /**
-     * Test signup with empty credentials
-     */
+    
     @Test
     public void testSignUpWithEmptyCredentials() {
         Reporter.log("Starting testSignUpWithEmptyCredentials...", true);

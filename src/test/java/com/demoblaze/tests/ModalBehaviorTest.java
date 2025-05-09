@@ -92,19 +92,13 @@ public class ModalBehaviorTest extends BaseTest {
         // Verify about us modal is displayed
         assertTrue(aboutUsPage.isAboutUsModalDisplayed(), "About Us modal should be displayed");
         
-        // Press ESC key
         aboutUsPage.pressEscapeKey();
         
-        // Verify modal is still displayed (documenting the defect)
         assertFalse(aboutUsPage.isAboutUsModalDisplayed(), "DEFECT: About Us modal should close with ESC key by UI/UX standards but remains open");
         
-        // Attempt to close with the close button and document if this also fails
         aboutUsPage.clickCloseButton();
         
-        // Adding sleep to allow time for modal to close if button works
-        try { Thread.sleep(1000); } catch (InterruptedException e) { /* ignore */ }
         
-        // Check if modal is still visible after clicking close button
         if (aboutUsPage.isAboutUsModalDisplayed()) {
             System.out.println("ADDITIONAL DEFECT: The Close button also fails to close the About Us modal");
         }
