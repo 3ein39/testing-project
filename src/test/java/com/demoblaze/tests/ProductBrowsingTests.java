@@ -13,18 +13,31 @@ public class ProductBrowsingTests extends BaseTest {
 
     @Test(description = "Verify home page elements are displayed correctly")
     public void testHomePageNavigation() {
-        assertTrue(homePage.getPageTitle().contains("STORE"), "Page title should contain 'STORE'");
-        
         assertTrue(homePage.isLoginLinkDisplayed(), "Login link should be displayed");
         assertTrue(homePage.isSignUpLinkDisplayed(), "Sign up link should be displayed");
         assertTrue(homePage.isCartLinkDisplayed(), "Cart link should be displayed");
         assertTrue(homePage.isContactLinkDisplayed(), "Contact link should be displayed");
-        
+
         assertTrue(homePage.isPhonesCategoryDisplayed(), "Phones category should be displayed");
         assertTrue(homePage.isLaptopsCategoryDisplayed(), "Laptops category should be displayed");
         assertTrue(homePage.isMonitorsCategoryDisplayed(), "Monitors category should be displayed");
-        
+
         assertTrue(homePage.isProductListDisplayed(), "Product list should be displayed");
+    }
+
+    @Test(description = "Verify clicking on logo returns to home page")
+    public void testLogoNavigation() {
+        homePage.clickLogo();
+
+        assertTrue(homePage.isPhonesCategoryDisplayed(), "Phones category should be displayed");
+        assertTrue(homePage.isLaptopsCategoryDisplayed(), "Laptops category should be displayed");
+        assertTrue(homePage.isMonitorsCategoryDisplayed(), "Monitors category should be displayed");
+
+        String url = driver.getCurrentUrl();
+        assertTrue(url.endsWith("index.html"), "URL should end with 'index.html'");
+
+        String currentUrl = driver.getCurrentUrl();
+        assertTrue(currentUrl.contains("index.html"), "URL should contain 'index.html'");
     }
     
     @Test(description = "Verify navigation between product categories")

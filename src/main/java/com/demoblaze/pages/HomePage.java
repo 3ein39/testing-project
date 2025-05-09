@@ -36,9 +36,17 @@ public class HomePage extends BasePage {
     @FindBy(css = ".card-title a")
     private WebElement productList;
 
+    @FindBy(css = ".navbar-brand")
+    private WebElement logo;
+
     public HomePage(WebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
+    }
+
+    public void clickLogo() {
+        waitHelper.waitForElementToBeClickable(logo).click();
+        waitHelper.waitForPageLoad();
     }
 
     public void clickLoginLink() {
