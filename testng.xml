@@ -3,7 +3,11 @@
 <suite name="DemoBlaze Test Suite">
     <test name="All Tests">
         <classes>
-            <class name="com.demoblaze.tests.DemoBlazeTest"/>
+            <class name="com.demoblaze.tests.AuthenticationTests"/>
+            <class name="com.demoblaze.tests.ProductBrowsingTests"/>
+            <class name="com.demoblaze.tests.ShoppingCartTests"/>
+            <class name="com.demoblaze.tests.PurchaseWorkflowTests"/>
+            <class name="com.demoblaze.tests.ContactFunctionalityTests"/>
             <class name="com.demoblaze.tests.ModalBehaviorTest"/>
         </classes>
     </test>
