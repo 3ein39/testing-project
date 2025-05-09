@@ -56,26 +56,14 @@ public class LoginPage extends BasePage {
         return waitHelper.waitForElementVisible(welcomeMessage).getText();
     }
     
-    /**
-     * Gets the welcome message element for use in wait conditions
-     * @return the welcome message WebElement
-     */
     public WebElement getWelcomeMessageElement() {
         return welcomeMessage;
     }
     
-    /**
-     * Gets the login button element for use in wait conditions
-     * @return the login button WebElement
-     */
     public WebElement getLoginButton() {
         return loginButton;
     }
     
-    /**
-     * Checks if login modal is displayed
-     * @return true if modal is displayed, false otherwise
-     */
     public boolean isLoginModalDisplayed() {
         try {
             return waitHelper.waitForElementVisible(loginModal).isDisplayed();
@@ -84,10 +72,6 @@ public class LoginPage extends BasePage {
         }
     }
     
-    /**
-     * Checks if username field is displayed
-     * @return true if field is displayed, false otherwise
-     */
     public boolean isUsernameFieldDisplayed() {
         try {
             return waitHelper.waitForElementVisible(usernameField).isDisplayed();
@@ -96,10 +80,6 @@ public class LoginPage extends BasePage {
         }
     }
     
-    /**
-     * Checks if password field is displayed
-     * @return true if field is displayed, false otherwise
-     */
     public boolean isPasswordFieldDisplayed() {
         try {
             return waitHelper.waitForElementVisible(passwordField).isDisplayed();
@@ -108,10 +88,6 @@ public class LoginPage extends BasePage {
         }
     }
     
-    /**
-     * Checks if login button is displayed
-     * @return true if button is displayed, false otherwise
-     */
     public boolean isLoginButtonDisplayed() {
         try {
             return waitHelper.waitForElementVisible(loginButton).isDisplayed();
@@ -120,16 +96,10 @@ public class LoginPage extends BasePage {
         }
     }
     
-    /**
-     * Presses the Escape key to close modal
-     */
     public void pressEscapeKey() {
         new Actions(driver).sendKeys(Keys.ESCAPE).perform();
     }
     
-    /**
-     * Clicks the close button to close the modal
-     */
     public void clickCloseButton() {
         waitHelper.waitForElementToBeClickable(closeButton).click();
     }

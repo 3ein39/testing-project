@@ -40,14 +40,12 @@ public class CategoryPage extends BasePage {
     }
 
     public int getProductCount() {
-        // Wait for products to update - replacing Thread.sleep
         waitHelper.waitForAllElementsVisible(categoryProducts);
         return categoryProducts.size();
     }
 
     public List<String> getProductNames() {
         List<String> names = new ArrayList<>();
-        // Wait for products to update - replacing Thread.sleep
         waitHelper.waitForAllElementsVisible(categoryProducts);
         
         for (int attempts = 0; attempts < 3; attempts++) {
@@ -58,7 +56,6 @@ public class CategoryPage extends BasePage {
                 break;
             } catch (StaleElementReferenceException e) {
                 if (attempts == 2) throw e;
-                // If we get a stale element, wait for page to stabilize
                 waitHelper.waitForPageLoad();
             }
         }
@@ -67,7 +64,7 @@ public class CategoryPage extends BasePage {
 
     public boolean isCategoryPageLoaded(String category) {
         try {
-            Thread.sleep(1000); // Wait for products to update
+            Thread.sleep(1000);
             List<String> products = getProductNames();
             switch (category.toLowerCase()) {
                 case "phone":

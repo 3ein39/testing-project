@@ -15,7 +15,7 @@ public class BasePage {
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // timeout
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         this.waitHelper = new WaitHelper(driver);
         this.alertHelper = new AlertHelper(driver);
         PageFactory.initElements(driver, this);

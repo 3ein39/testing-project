@@ -64,10 +64,6 @@ public class ContactPage extends BasePage {
         clickSendMessageButton();
     }
     
-    /**
-     * Checks if contact modal is displayed
-     * @return true if modal is displayed, false otherwise
-     */
     public boolean isContactModalDisplayed() {
         try {
             return waitHelper.waitForElementVisible(contactModal).isDisplayed();
@@ -76,16 +72,10 @@ public class ContactPage extends BasePage {
         }
     }
     
-    /**
-     * Presses the Escape key to close modal
-     */
     public void pressEscapeKey() {
         new Actions(driver).sendKeys(Keys.ESCAPE).perform();
     }
     
-    /**
-     * Clicks the close button to close the modal
-     */
     public void clickCloseButton() {
         waitHelper.waitForElementToBeClickable(closeButton).click();
     }

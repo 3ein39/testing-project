@@ -47,10 +47,6 @@ public class SignUpPage extends BasePage {
         clickSignUpButton();
     }
     
-    /**
-     * Checks if sign up modal is displayed
-     * @return true if modal is displayed, false otherwise
-     */
     public boolean isSignUpModalDisplayed() {
         try {
             return waitHelper.waitForElementVisible(signUpModal).isDisplayed();
@@ -59,16 +55,10 @@ public class SignUpPage extends BasePage {
         }
     }
     
-    /**
-     * Presses the Escape key to close modal
-     */
     public void pressEscapeKey() {
         new Actions(driver).sendKeys(Keys.ESCAPE).perform();
     }
     
-    /**
-     * Clicks the close button to close the modal
-     */
     public void clickCloseButton() {
         waitHelper.waitForElementToBeClickable(closeButton).click();
     }

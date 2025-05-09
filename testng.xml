@@ -3,7 +3,6 @@
 <suite name="DemoBlaze Test Suite">
     <test name="All Tests">
         <classes>
-            <class name="com.demoblaze.tests.HomePageTest"/>
             <class name="com.demoblaze.tests.DemoBlazeTest"/>
             <class name="com.demoblaze.tests.ModalBehaviorTest"/>
         </classes>

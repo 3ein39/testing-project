@@ -86,16 +86,13 @@ public class CartPage extends BasePage {
             WebElement purchaseBtn = waitHelper.waitForElementVisible(purchaseButtonLoc);
             waitHelper.waitForElementToBeClickable(purchaseButtonLoc);
             
-            // Scroll the button into view
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", purchaseBtn);
             
             waitHelper.waitForElementToBeClickable(purchaseBtn);
 
-            // Click using JavaScript
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", purchaseBtn);
             System.out.println("Purchase button clicked successfully");
             
-            // Check for any alert that might appear
             alertHelper.acceptAlertIfPresent();
         } catch (Exception e) {
             System.out.println("Error clicking purchase button: " + e.getMessage());
@@ -107,7 +104,6 @@ public class CartPage extends BasePage {
         try {
             System.out.println("Waiting for order confirmation...");
             
-            // First check if we're still on the cart page
             String currentUrl = driver.getCurrentUrl();
             System.out.println("Current URL: " + currentUrl);
             
@@ -135,15 +131,12 @@ public class CartPage extends BasePage {
 
             waitHelper.waitForElementVisible(confirmationDialog);
             
-            // Get all text elements in the confirmation dialog
             List<WebElement> confirmationElements = confirmationDialog.findElements(By.tagName("p"));
             StringBuilder confirmationText = new StringBuilder();
             
-            // Get the header first
             WebElement headerElement = confirmationDialog.findElement(By.tagName("h2"));
             confirmationText.append(headerElement.getText()).append("\n");
             
-            // Append all paragraph texts
             for (WebElement element : confirmationElements) {
                 confirmationText.append(element.getText()).append("\n");
             }

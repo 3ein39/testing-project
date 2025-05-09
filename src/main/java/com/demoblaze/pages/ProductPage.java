@@ -38,7 +38,6 @@ public class ProductPage extends BasePage {
                 break;
             } catch (StaleElementReferenceException e) {
                 if (attempts == 2) throw new RuntimeException("Failed to click product after 3 attempts", e);
-                // If we get a stale element, wait for page to stabilize
                 waitHelper.waitForPageLoad();
             }
         }
