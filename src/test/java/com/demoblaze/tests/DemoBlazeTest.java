@@ -35,19 +35,15 @@ public class DemoBlazeTest extends BaseTest {
 
     @Test
     public void testLoginFunctionality() {
-        // Use login helper method from BaseTest
         login("reveari", "reveari");
         
-        // Verify login was successful
-        waitHelper.waitWithTimeout(ExpectedConditions.visibilityOf(loginPage.getWelcomeMessageElement()), 5);
+        waitHelper.waitForElementVisible(loginPage.getWelcomeMessageElement());
         assertTrue(loginPage.isWelcomeMessageDisplayed(), "Welcome message should be displayed after login");
         String welcomeMessage = loginPage.getWelcomeMessage();
         assertTrue(welcomeMessage.contains("Welcome"), "Welcome message should contain 'Welcome'");
     }
     
-    /**
-     * Test login with invalid credentials (wrong password)
-     */
+  
     @Test
     public void testLoginWithWrongPassword() {
         Reporter.log("Starting testLoginWithWrongPassword...", true);

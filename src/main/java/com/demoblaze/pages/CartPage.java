@@ -44,6 +44,15 @@ public class CartPage extends BasePage {
     @FindBy(id = "year")
     private WebElement yearField;
 
+    @FindBy(xpath = "//button[contains(text(), 'Purchase')]")
+    private WebElement purchaseButtonLoc;
+
+    @FindBy(xpath = "//h2[contains(text(), 'Thank you')]")
+    private WebElement successMessage;
+
+    @FindBy(css = ".sweet-alert")
+    private WebElement confirmationDialog;
+
     public CartPage(WebDriver driver) {
         super(driver);
     }
@@ -74,17 +83,14 @@ public class CartPage extends BasePage {
         try {
             System.out.println("Clicking purchase button...");
             
-            // Wait for the purchase button to be present and visible
-            By purchaseButtonLocator = By.xpath("//button[contains(text(), 'Purchase')]");
-            WebElement purchaseBtn = waitHelper.waitForElementVisible(purchaseButtonLocator);
-            waitHelper.waitForElementToBeClickable(purchaseBtn);
+            WebElement purchaseBtn = waitHelper.waitForElementVisible(purchaseButtonLoc);
+            waitHelper.waitForElementToBeClickable(purchaseButtonLoc);
             
             // Scroll the button into view
             ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", purchaseBtn);
             
-            // Wait for scrolling to complete (replacing Thread.sleep)
-            waitHelper.waitWithTimeout(ExpectedConditions.elementToBeClickable(purchaseBtn), 3);
-            
+            waitHelper.waitForElementToBeClickable(purchaseBtn);
+
             // Click using JavaScript
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", purchaseBtn);
             System.out.println("Purchase button clicked successfully");
@@ -105,14 +111,9 @@ public class CartPage extends BasePage {
             String currentUrl = driver.getCurrentUrl();
             System.out.println("Current URL: " + currentUrl);
             
-            // Try different selectors for the confirmation message
             try {
-                // Wait for the success message with extended timeout
-                By successMessageLocator = By.xpath("//h2[contains(text(), 'Thank you')]");
-                WebElement confirmationElement = waitHelper.waitWithTimeout(
-                    ExpectedConditions.visibilityOfElementLocated(successMessageLocator), 
-                    20
-                );
+                WebElement confirmationElement = waitHelper.waitForElementVisible(successMessage);
+
                 String confirmationText = confirmationElement.getText();
                 System.out.println("Order confirmation text: " + confirmationText);
                 return confirmationText;
@@ -131,13 +132,8 @@ public class CartPage extends BasePage {
     public String getCompleteOrderConfirmation() {
         try {
             System.out.println("Getting complete order confirmation...");
-            
-            // Wait for the confirmation dialog to be visible
-            By confirmationDialogLocator = By.cssSelector(".sweet-alert");
-            WebElement confirmationDialog = waitHelper.waitWithTimeout(
-                ExpectedConditions.visibilityOfElementLocated(confirmationDialogLocator), 
-                20
-            );
+
+            waitHelper.waitForElementVisible(confirmationDialog);
             
             // Get all text elements in the confirmation dialog
             List<WebElement> confirmationElements = confirmationDialog.findElements(By.tagName("p"));
